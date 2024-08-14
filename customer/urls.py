@@ -17,10 +17,11 @@ Including another URLconf
 from django.urls import path
 
 from customer.views import customers, add_customer, edit_customer, delete_customer, login_page, logout_page, \
-    register_page
+    register_page, customer_detail
 
 urlpatterns = [
     path('', customers, name='customers'),
+    path('customers/<int:customer_id>/', customer_detail, name='customer_detail'),
     path('add-customer/', add_customer, name='add_customer'),
     path('customer/<int:pk>/delete', delete_customer, name='delete'),
     path('customer/<int:pk>/update', edit_customer, name='edit'),
