@@ -1,5 +1,6 @@
 from django import forms
-from customer.models import Customer, User
+from customer.models import Customer
+from django.contrib.auth.models import User
 
 
 class CustomerModelForm(forms.ModelForm):

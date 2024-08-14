@@ -14,12 +14,15 @@ class Customer(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=150)
-    joined = models.DateTimeField(default=datetime.now())
+    joined = models.DateTimeField(default=datetime.now)
     image = models.ImageField(upload_to='customer/', null=True, blank=True)
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email
+
+    def get_joined_date(self):
+        return self.joined.strftime('%Y-%m-%d')
 
     class Meta:
         verbose_name_plural = 'Customers'
@@ -53,8 +56,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     birth_of_date = models.DateField(null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=True)
-    is_superuser = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     groups = models.ManyToManyField(
         Group,
@@ -82,5 +85,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     def save(self, *args, **kwargs):
         if self.password and not self.password.startswith(('pbkdf2_sha256$', 'bcrypt$', 'argon2')):
             self.password = make_password(self.password)
-
         super().save(*args, **kwargs)
+
