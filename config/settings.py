@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'customer.apps.CustomerConfig',
+    'product.apps.ProductConfig',
 ]
 
 JAZZMIN_SETTINGS = {
