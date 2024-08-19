@@ -442,7 +442,7 @@
                                         href="#">{{ customer.phone_number }}</a></td>
                                 <td class="address align-middle white-space-nowrap ps-5 py-2">{{ customer.address }}
                                 </td>
-                                <td class="joined align-middle py-2">{{ customer.joined }}</td>
+                                <td class="joined align-middle py-2">{{ customer.get_joined_date }}</td>
                                 <td class="align-middle white-space-nowrap py-2 text-end">
                                     <div class="dropdown font-sans-serif position-static">
                                         <button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal"
