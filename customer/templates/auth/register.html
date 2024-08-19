@@ -87,29 +87,30 @@
                       <h3>Register</h3>
                       <form method="post">
                           {% csrf_token %}
-                          {{ form.as_p }}
-{#                        <div class="mb-3">#}
-{#                          <label class="form-label" for="card-name">Name</label>#}
-{#                          <input class="form-control" type="text" name="name" autocomplete="on" id="card-name" />#}
-{#                        </div>#}
-{#                        <div class="mb-3">#}
-{#                          <label class="form-label" for="card-email">Email address</label>#}
-{#                          <input class="form-control" type="email" name="email" autocomplete="on" id="card-email" />#}
-{#                        </div>#}
-{#                        <div class="row gx-2">#}
-{#                          <div class="mb-3 col-sm-6">#}
-{#                            <label class="form-label" for="card-password">Password</label>#}
-{#                            <input class="form-control" type="password" name="password" autocomplete="on" id="card-password" />#}
-{#                          </div>#}
-{#                          <div class="mb-3 col-sm-6">#}
-{#                            <label class="form-label" for="card-confirm-password">Confirm Password</label>#}
-{#                            <input class="form-control" type="password" name="confirm_password" autocomplete="on" id="card-confirm-password" />#}
-{#                          </div>#}
-{#                        </div>#}
-{#                        <div class="form-check">#}
-{#                          <input class="form-check-input" type="checkbox" id="card-register-checkbox" />#}
-{#                          <label class="form-label" for="card-register-checkbox">I accept the <a href="#!">terms </a>and <a href="#!">privacy policy</a></label>#}
-{#                        </div>#}
+{#                          {{ form.as_p }}#}
+                          <div class="mb-3">
+                          <label class="form-label" for="card-email">Email address</label>
+                          <input class="form-control" type="email" name="email" autocomplete="on" id="card-email" />
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label" for="card-name">Username</label>
+                          <input class="form-control" type="text" name="username" autocomplete="on" id="card-name" />
+                        </div>
+
+                        <div class="row gx-2">
+                          <div class="mb-3 col-sm-6">
+                            <label class="form-label" for="card-password">Password</label>
+                            <input class="form-control" type="password" name="password" autocomplete="on" id="card-password" />
+                          </div>
+                          <div class="mb-3 col-sm-6">
+                            <label class="form-label" for="card-confirm-password">Confirm Password</label>
+                            <input class="form-control" type="password" name="confirm_password" autocomplete="on" id="card-confirm-password" />
+                          </div>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="card-register-checkbox" />
+                          <label class="form-label" for="card-register-checkbox">I accept the <a href="#!">terms </a>and <a href="#!">privacy policy</a></label>
+                        </div>
                         <div class="mb-3">
                           <button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Register</button>
                         </div>
