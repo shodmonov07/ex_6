@@ -13,7 +13,7 @@ def customers(request):
     search_query = request.GET.get('search')
     if search_query:
         customer_list = Customer.objects.filter(
-            Q(full_name__icontains=search_query) | Q(address__icontains=search_query) | Q(email__icontains=search_query ))
+            Q(full_name__icontains=search_query) | Q(address__icontains=search_query) | Q(email__icontains=search_query))
     else:
         customer_list = Customer.objects.all()
     context = {

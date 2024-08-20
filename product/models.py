@@ -12,13 +12,12 @@ class Product(models.Model):
         four = 4
         five = 5
 
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=True)
-    image = models.ImageField(upload_to='products/')
-    price = models.DecimalField(max_digits=5, decimal_places=2)
-    rating = models.PositiveSmallIntegerField(choices=RatingChoices.choices, default=RatingChoices.zero.value,
-                                              null=True, blank=True)
-    discount = models.PositiveSmallIntegerField(null=True, blank=True)
+    name = models.CharField(max_length=100, blank=True, default='')
+    description = models.TextField(blank=True, default='')
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    price = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    rating = models.PositiveSmallIntegerField(choices=RatingChoices.choices, default=RatingChoices.zero.value, blank=True, null=True)
+    discount = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     quantity = models.IntegerField(default=0)
 
     def get_attributes(self) -> list[dict]:

@@ -350,8 +350,8 @@
                 <div class="col">
                   <h5 class="mb-2"> (<a href="#">{{ customer.full_name }}</a>)</h5><a class="btn btn-falcon-default btn-sm" href="#!"><span class="fas fa-plus fs--2 me-1"></span>Add note</a>
                   <button class="btn btn-falcon-default btn-sm dropdown-toggle ms-2 dropdown-caret-none" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-ellipsis-h"></span></button>
-                  <div class="dropdown-menu"><a class="dropdown-item" href="#">Edit</a><a class="dropdown-item" href="#">Report</a><a class="dropdown-item" href="#">Archive</a>
-                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="#">Delete user</a>
+                  <div class="dropdown-menu"><a class="dropdown-item" href="{% url 'edit' customer.id %}">Edit</a><a class="dropdown-item" href="#">Report</a><a class="dropdown-item" href="#">Archive</a>
+                    <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="{% url 'delete' customer.id %}">Delete user</a>
                   </div>
                 </div>
                 <div class="col-auto d-none d-sm-block">

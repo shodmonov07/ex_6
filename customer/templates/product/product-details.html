@@ -7,7 +7,7 @@
 
 {% block customer_content %}
 
-    <div class="content">
+        <div class="content">
         <nav class="navbar navbar-light navbar-glass navbar-top navbar-expand">
 
             <button class="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" type="button"
@@ -341,145 +341,179 @@
                 </li>
             </ul>
         </nav>
-        <div class="card mb-3">
+        <a href="{% url 'ProductDeleteView' product.id %}">
+            <button type="button" class="btn btn-danger">Delete</button>
+            <a href="{% url 'edit_product' pk=product.pk %}">
+                <button type="button" class="btn btn-secondary">Edit</button>
+                <a href="{% url 'ProductCreateView'%}">
+                     <button style="background-color: green; color: white;">Add</button>
+                </a>
+            </a>
+        </a>
+          <div class="card mb-3">
             <div class="card-body">
-                <div class="row flex-between-center">
-                    <div class="col-sm-auto mb-2 mb-sm-0">
-                        <h6 class="mb-0">Showing 1-24 of 205 Products</h6>
-                    </div>
-                    <div class="col-sm-auto">
-                        <div class="row gx-2 align-items-center">
-                            <div class="col-auto">
-                                <form class="row gx-2">
-                                    <div class="col-auto"><small>Sort by: </small></div>
-                                    <div class="col-auto">
-                                        <select class="form-select form-select-sm" aria-label="Bulk actions">
-                                            <option selected="">Best Match</option>
-                                            <option value="Refund">Newest</option>
-                                            <option value="Delete">Price</option>
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="col-auto pe-0"><a class="text-600 px-1"
-                                                          href="../../../app/e-commerce/product/product-grid.html"
-                                                          data-bs-toggle="tooltip" title="Product Grid"><span
-                                    class="fas fa-th"></span></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body p-0 overflow-hidden">
-                <div class="row g-0">
-                    {% for product in page_obj %}
-                        <div class="col-12 p-card">
-                            <div class="row">
-                                <div class="col-sm-5 col-md-4">
-                                 <div class="position-relative rounded-top overflow-hidden"><a class="d-block" href="#!">
-                        {% if product.image %}
+              <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                  <div class="product-slider" id="galleryTop">
+                    <div class="swiper-container theme-slider position-lg-absolute all-0" data-swiper='{"autoHeight":true,"spaceBetween":5,"loop":true,"loopedSlides":5,"thumb":{"spaceBetween":5,"slidesPerView":5,"loop":true,"freeMode":true,"grabCursor":true,"loopedSlides":5,"centeredSlides":true,"slideToClickedSlide":true,"watchSlidesVisibility":true,"watchSlidesProgress":true,"parent":"#galleryTop"},"slideToClickedSlide":true}'>
+                      <div class="swiper-wrapper h-100">
+{#                          {% if image in product.image %}#}
+                        <div class="swiper-slide h-100"> {% if product.image %}
                             <img src="{{ product.image.url }}" alt="Product Image" style="max-width: 100px;">
                         {% else %}
                             No Image
-                        {% endif %}                                 </a><span class="badge rounded-pill bg-success position-absolute mt-2 me-2 z-index-2 top-0 end-0">New</span>
-                                 </div>
-                                        <div class="badge rounded-pill bg-success position-absolute top-0 end-0 me-2 mt-2 fs--2 z-index-2">
-                                            New
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-7 col-md-8">
-                                    <div class="row">
-                                        <div class="col-lg-8">
-                                            <h5 class="mt-3 mt-sm-0">
-                                                <a 
-                                                    class="text-dark fs-0 fs-lg-1"
-                                                   href="{% url 'ProductDetailView' product.id %}">
-                                                {{ product.name }}
-
-                                                </a>
-                                            </h5>
-                                            <p class="fs--1 mb-2 mb-md-3"><a class="text-500" href="#!">Computer
-                                                &amp; Accessories</a></p>
-                                            <ul class="list-unstyled d-none d-lg-block">
-                                                <li><span class="fas fa-circle"
-                                                          data-fa-transform="shrink-12"></span><span>{{ product.description }}</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4 d-flex justify-content-between flex-column">
-                                            <div>
-                                             <h4 class="d-flex align-items-center"> {% if product.discount %}
-                                        <span class="text-muted text-decoration-line-through">${{ product.price }}</span> <br> &nbsp;
+                        {% endif %}</div>
+{#                          {% endif %}#}
+                      </div>
+                      <div class="swiper-nav">
+                        <div class="swiper-button-next swiper-button-white"></div>
+                        <div class="swiper-button-prev swiper-button-white"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <h5>{{ product.name }}</h5><a class="fs--1 mb-2 d-block" href="#!">Computer &amp; Accessories</a>
+                   <div class="d-flex justify-content-center small text-warning mb-2">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= product.rating %}
+                                 <i class="bi bi-star-fill"></i>
+                            {% else %}
+                                 <i class="bi bi-star"></i>
+                            {% endif %}
+                       {% endfor %}
+                   </div>
+                  <p class="fs--1">{{ product.rating }}</p>
+                  <h4 class="d-flex align-items-center"> {% if product.discount %}
+                                        <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
                                         ${{ product.discounted_price }}
                                     {% else %}
                                         ${{ product.price }}
                                     {% endif %}</h4>
-                                     <div class="d-flex justify-content-center small text-warning mb-2">
-                                           {% for i in "12345" %}
-                                              {% if forloop.counter <= product.rating %}
-                                                  <i class="bi bi-star-fill"></i>
-                                              {% else %}
-                                                  <i class="bi bi-star"></i>
-                                              {% endif %}
-                                           {% endfor %}
-                                     </div>
-                                                <div class="d-none d-lg-block">
-                                                    <p class="fs--1 mb-1">Shipping Cost: <strong>$50</strong></p>
-                                                    <p class="fs--1 mb-1">Stock: <strong
-                                                            class="text-success">Available</strong>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="mt-2"><a
-                                                    class="btn btn-sm btn-outline-secondary border-300 d-lg-block me-2 me-lg-0"
-                                                    href="#!"><span class="far fa-heart"></span><span
-                                                    class="ms-2 d-none d-md-inline-block">Favourite</span></a><a
-                                                    class="btn btn-sm btn-primary d-lg-block mt-lg-2"
-                                                    href="#!"><span class="fas fa-cart-plus"> </span><span
-                                                    class="ms-2 d-none d-md-inline-block">Add to Cart</span></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                  <p class="fs--1 mb-1"> <span>Shipping Cost: </span><strong>$50</strong></p>
+                  <p class="fs--1">Stock: <strong class="text-success">Available</strong></p>
+                  <p class="fs--1 mb-3">Tags: <a class="ms-2" href="#!">Computer,</a><a class="ms-1" href="#!">Mac Book,</a><a class="ms-1" href="#!">Mac Book Pro,</a><a class="ms-1" href="#!">Laptop </a></p>
+                  <div class="row">
+                    <div class="col-auto pe-0">
+                      <div class="input-group input-group-sm" data-quantity="data-quantity">
+                        <button class="btn btn-sm btn-outline-secondary border-300" data-field="input-quantity" data-type="minus">-</button>
+                        <input class="form-control text-center input-quantity input-spin-none" type="number" min="0" value="0" aria-label="Amount (to the nearest dollar)" style="max-width: 50px" />
+                        <button class="btn btn-sm btn-outline-secondary border-300" data-field="input-quantity" data-type="plus">+</button>
+                      </div>
+                    </div>
+                    <div class="col-auto px-2 px-md-3"><a class="btn btn-sm btn-primary" href="#!"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Add To Cart</span></a></div>
+                    <div class="col-auto px-0"><a class="btn btn-sm btn-outline-danger border-300" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wish List"><span class="far fa-heart me-1"></span>282</a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="overflow-hidden mt-4">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item"><a class="nav-link active ps-0" id="description-tab" data-bs-toggle="tab" href="#tab-description" role="tab" aria-controls="tab-description" aria-selected="true">Description</a></li>
+                      <li class="nav-item"><a class="nav-link px-2 px-md-3" id="specifications-tab" data-bs-toggle="tab" href="#tab-specifications" role="tab" aria-controls="tab-specifications" aria-selected="false">Specifications</a></li>
+                      <li class="nav-item"><a class="nav-link px-2 px-md-3" id="reviews-tab" data-bs-toggle="tab" href="#tab-reviews" role="tab" aria-controls="tab-reviews" aria-selected="false">Reviews</a></li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="tab-description" role="tabpanel" aria-labelledby="description-tab">
+                        <div class="mt-3">
+                            {{ product.description }}
                         </div>
-                    {% endfor %}
-
+                      </div>
+                      <div class="tab-pane fade" id="tab-specifications" role="tabpanel" aria-labelledby="specifications-tab">
+                        <table class="table fs--1 mt-3">
+                          <tbody>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Processor</td>
+                              <td>2.3GHz quad-core Intel Core i5,</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Memory</td>
+                              <td>8GB of 2133MHz LPDDR3 onboard memory</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Brand Name</td>
+                              <td>Apple</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Model</td>
+                              <td>Mac Book Pro</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Display</td>
+                              <td>13.3-inch (diagonal) LED-backlit display with IPS technology</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Storage</td>
+                              <td>512GB SSD</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Graphics</td>
+                              <td>Intel Iris Plus Graphics 655</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Weight</td>
+                              <td>7.15 pounds</td>
+                            </tr>
+                            <tr>
+                              <td class="bg-100" style="width: 30%;">Finish</td>
+                              <td>Silver, Space Gray</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="tab-pane fade" id="tab-reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                        <div class="row mt-3">
+                          <div class="col-lg-6 mb-4 mb-lg-0">
+                            <div class="mb-1"><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star text-warning fs--1"></span><span class="ms-3 text-dark fw-semi-bold">Awesome support, great code 😍</span>
+                            </div>
+                            <p class="fs--1 mb-2 text-600">By Drik Smith • October 14, 2019</p>
+                            <p class="mb-0">You shouldn't need to read a review to see how nice and polished this theme is. So I'll tell you something you won't find in the demo. After the download I had a technical question, emailed the team and got a response right from the team CEO with helpful advice.</p>
+                            <hr class="my-4" />
+                            <div class="mb-1"><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star text-warning fs--1"></span><span class="fa fa-star-half-alt text-warning star-icon fs--1"></span><span class="ms-3 text-dark fw-semi-bold">Outstanding Design, Awesome Support</span>
+                            </div>
+                            <p class="fs--1 mb-2 text-600">By Liane • December 14, 2019</p>
+                            <p class="mb-0">This really is an amazing template - from the style to the font - clean layout. SO worth the money! The demo pages show off what Bootstrap 4 can impressively do. Great template!! Support response is FAST and the team is amazing - communication is important.</p>
+                          </div>
+                          <div class="col-lg-6 ps-lg-5">
+                            <form>
+                              <h5 class="mb-3">Write your Review</h5>
+                              <div class="mb-3">
+                                <label class="form-label">Ratting: </label>
+                                <div class="d-block" data-rater='{"starSize":32,"step":0.5}'></div>
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label" for="formGroupNameInput">Name:</label>
+                                <input class="form-control" id="formGroupNameInput" type="text" />
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label" for="formGroupEmailInput">Email:</label>
+                                <input class="form-control" id="formGroupEmailInput" type="email" />
+                              </div>
+                              <div class="mb-3">
+                                <label class="form-label" for="formGrouptextareaInput">Review:</label>
+                                <textarea class="form-control" id="formGrouptextareaInput" rows="3"></textarea>
+                              </div>
+                              <button class="btn btn-primary" type="submit">Submit</button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
-
-
-            <div class="pagination">
-                <span class="step-links">
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    </span>
-
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>
-        </div>
-        <footer class="footer">
+          </div>
+          <footer class="footer">
             <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
-                <div class="col-12 col-sm-auto text-center">
-                    <p class="mb-0 text-600">Thank you for creating with Falcon <span
-                            class="d-none d-sm-inline-block">| </span><br class="d-sm-none"/> 2021 &copy; <a
-                            href="https://themewagon.com">Themewagon</a></p>
-                </div>
-                <div class="col-12 col-sm-auto text-center">
-                    <p class="mb-0 text-600">v3.4.0</p>
-                </div>
+              <div class="col-12 col-sm-auto text-center">
+                <p class="mb-0 text-600">Thank you for creating with Falcon <span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> 2021 &copy; <a href="https://themewagon.com">Themewagon</a></p>
+              </div>
+              <div class="col-12 col-sm-auto text-center">
+                <p class="mb-0 text-600">v3.4.0</p>
+              </div>
             </div>
-        </footer>
-    </div>
+          </footer>
+        </div>
 {% endblock %}

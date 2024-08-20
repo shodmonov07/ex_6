@@ -10,8 +10,8 @@ from customer.managers import MyUserManager
 
 
 class Customer(models.Model):
-    full_name = models.CharField(max_length=155, null=True, blank=True)  # verbose_name="To'liq ismi")
     email = models.EmailField(unique=True)
+    full_name = models.CharField(max_length=155, null=True, blank=True)  # verbose_name="To'liq ismi")
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=150)
     joined = models.DateTimeField(default=datetime.now)
