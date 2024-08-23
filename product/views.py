@@ -4,7 +4,7 @@ from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DeleteView, UpdateView, DetailView, CreateView
+from django.views.generic import DeleteView, UpdateView, DetailView, CreateView, ListView
 
 from product.forms import ProductModelForm
 from product.models import Product
@@ -27,24 +27,31 @@ from product.models import Product
 #     return render(request, 'product/product-list.html', context)
 
 
-class ProductListView(View):
-    def get(self, request):
-        products = Product.objects.all().order_by('-id')
-        paginator = Paginator(products, 3)  # Har bir sahifada 2 ta mahsulot
+# class ProductListView(View):
+#     def get(self, request):
+#         products = Product.objects.all().order_by('-id')
+#         paginator = Paginator(products, 3)  # Har bir sahifada 3 ta mahsulot
+#
+#         page_number = request.GET.get('page')
+#
+#         try:
+#             page_obj = paginator.page(page_number)
+#         except PageNotAnInteger:
+#             page_obj = paginator.page(1)
+#         except EmptyPage:
+#             page_obj = paginator.page(paginator.num_pages)
+#
+#         context = {
+#             'page_obj': page_obj
+#         }
+#         return render(request, 'product/product-list.html', context)
 
-        page_number = request.GET.get('page')
 
-        try:
-            page_obj = paginator.page(page_number)
-        except PageNotAnInteger:
-            page_obj = paginator.page(1)
-        except EmptyPage:
-            page_obj = paginator.page(paginator.num_pages)
-
-        context = {
-            'page_obj': page_obj
-        }
-        return render(request, 'product/product-list.html', context)
+class ProductListView(ListView):
+    model = Product
+    template_name = 'product/product-list.html'
+    context_object_name = 'products'
+    paginate_by = 10  # Har bir sahifada 10 ta mahsulot
 
 
 class ProductDetailView(DetailView):

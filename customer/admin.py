@@ -14,4 +14,3 @@ class UserAdmin(admin.ModelAdmin):
 
     list_display = ('email', 'date_of_birth')
     search_fields = ('email',)
-

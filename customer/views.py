@@ -1,8 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth.views import LoginView
+from django.core.mail import send_mail
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from customer.forms import CustomerModelForm, RegisterForm, LoginForm
+from django.urls import reverse_lazy
+from django.views.generic import View, FormView
+
+from config.settings import EMAIL_DEFAULT_SENDER
+from customer.forms import CustomerModelForm, RegisterForm, LoginForm, SendingEmailForm
 from customer.models import Customer
 from django.contrib.auth.decorators import permission_required, login_required
 
@@ -81,19 +87,30 @@ def login_page(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
+            email: str = form.cleaned_data['email']
+            password: str = form.cleaned_data['password']
             user = authenticate(request, email=email, password=password)
             if user:
                 login(request, user)
                 return redirect('customers')
             else:
-                messages.error(request,
-                               'Invalid email or password')
-                pass
+                messages.error(request, 'Invalid Username or Password')
     else:
         form = LoginForm()
     return render(request, 'auth/login.html', {'form': form})
+
+
+# class LoginPage(LoginView):
+#     redirect_authenticated_user = True
+#     form_class = AuthenticationForm
+#     template_name = 'auth/login.html'
+#
+#     def get_success_url(self):
+#         return reverse_lazy('customers')
+#
+#     def form_invalid(self, form):
+#         messages.error(self.request, 'Invalid email or password')
+#         return self.render_to_response(self.get_context_data(form=form))
 
 
 def register_page(request):
@@ -102,16 +119,40 @@ def register_page(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
+            send_mail(
+                'User Succesfully Registered',
+                'Test body',
+                EMAIL_DEFAULT_SENDER,
+                [user.email],
+                fail_silently=False
+
+            )
             login(request, user)
             return redirect('customers')
     else:
         form = RegisterForm()
-
-    context = {
-        'form': form
-    }
-
+    context = {'form': form}
     return render(request, 'auth/register.html', context)
+
+
+# class RegisterPage(FormView):
+#     template_name = 'auth/register.html'
+#     form_class = RegisterForm
+#     success_url = reverse_lazy('customers')
+#
+#     def form_valid(self, form):
+#         user = form.save(commit=False)
+#         user.save()
+#         send_mail(
+#             'User Succesfully Registered',
+#             'Test body',
+#             EMAIL_DEFAULT_SENDER,
+#             [user.email],
+#             fail_silently=False
+#
+#         )
+#         login(self.request, user)
+#         return super().form_valid(form)
 
 
 def logout_page(request):
@@ -120,4 +161,27 @@ def logout_page(request):
         return redirect('customers')
 
 
+class SendingEmailView(View):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.sent = False
 
+    def get(self, request, *args, **kwargs):
+        context = {
+            'form': SendingEmailForm(),
+            'sent': self.sent
+        }
+        return render(request, 'send-email.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = SendingEmailForm(request.POST)
+        if form.is_valid():
+            send_mail(
+                form.cleaned_data['subject'],
+                form.cleaned_data['message'],
+                EMAIL_DEFAULT_SENDER,
+                form.cleaned_data['recipient_list'],
+                fail_silently=False
+            )
+            self.sent = True
+        return render(request, 'send-email.html', {'form': form, 'sent': self.sent})

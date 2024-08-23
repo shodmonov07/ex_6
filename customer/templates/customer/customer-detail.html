@@ -183,6 +183,9 @@
                             class="notification-indicator-number">1</span></a>
 
                 </li>
+            	
+            
+            
                 <li class="nav-item dropdown">
                     <a class="nav-link notification-indicator notification-indicator-primary px-0 fa-icon-wait"
                        id="navbarDropdownNotification" href="#" role="button" data-bs-toggle="dropdown"
@@ -314,7 +317,7 @@
                                                  role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                                                  aria-expanded="false">
                     <div class="avatar avatar-xl">
-                        <img class="rounded-circle" src="{% static  'assets/img/team/3-thumb.png' %}" alt=""/>
+                        <img class="rounded-circle" src="{{ user.image.url }}" alt=""/>
 
                     </div>
                 </a>
