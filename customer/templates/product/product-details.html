@@ -374,15 +374,16 @@
                 </div>
                 <div class="col-lg-6">
                   <h5>{{ product.name }}</h5><a class="fs--1 mb-2 d-block" href="#!">Computer &amp; Accessories</a>
-                   <div class="d-flex justify-content-center small text-warning mb-2">
-                        {% for i in "12345" %}
-                            {% if forloop.counter <= product.rating %}
-                                 <i class="bi bi-star-fill"></i>
-                            {% else %}
-                                 <i class="bi bi-star"></i>
-                            {% endif %}
-                       {% endfor %}
-                   </div>
+                  <div class="ratings-container">
+    {% with ''|center:product.rating as ratings %}
+        <div class="ratings">
+            {% for rating in ratings %}
+                <span class="fa fa-star text-warning"></span>
+            {% endfor %}
+        </div>
+        <span class="ms-1">{{ comment }}</span>
+    {% endwith %}
+</div>
                   <p class="fs--1">{{ product.rating }}</p>
                   <h4 class="d-flex align-items-center"> {% if product.discount %}
                                         <span class="text-muted text-decoration-line-through">${{ product.price }}</span>

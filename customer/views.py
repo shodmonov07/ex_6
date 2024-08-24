@@ -4,8 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import View, FormView
+from django.views.generic import View
 
 from config.settings import EMAIL_DEFAULT_SENDER
 from customer.forms import CustomerModelForm, RegisterForm, LoginForm, SendingEmailForm
@@ -83,8 +82,29 @@ def edit_customer(request, pk):
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<AUTH>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-def login_page(request):
-    if request.method == 'POST':
+# def login_page(request):
+#     if request.method == 'POST':
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             email: str = form.cleaned_data['email']
+#             password: str = form.cleaned_data['password']
+#             user = authenticate(request, email=email, password=password)
+#             if user:
+#                 login(request, user)
+#                 return redirect('customers')
+#             else:
+#                 messages.error(request, 'Invalid Username or Password')
+#     else:
+#         form = LoginForm()
+#     return render(request, 'auth/login.html', {'form': form})
+
+
+class LoginPageView(View):
+    def get(self, request, *args, **kwargs):
+        form = LoginForm()
+        return render(request, 'auth/login.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
         form = LoginForm(request.POST)
         if form.is_valid():
             email: str = form.cleaned_data['email']
@@ -95,68 +115,63 @@ def login_page(request):
                 return redirect('customers')
             else:
                 messages.error(request, 'Invalid Username or Password')
-    else:
-        form = LoginForm()
-    return render(request, 'auth/login.html', {'form': form})
+        return render(request, 'auth/login.html', {'form': form})
 
 
-# class LoginPage(LoginView):
-#     redirect_authenticated_user = True
-#     form_class = AuthenticationForm
-#     template_name = 'auth/login.html'
+# def register_page(request):
+#     if request.method == 'POST':
+#         form = RegisterForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.save()
+#             send_mail(
+#                 'User Succesfully Registered',
+#                 'Test body',
+#                 EMAIL_DEFAULT_SENDER,
+#                 [user.email],
+#                 fail_silently=False
 #
-#     def get_success_url(self):
-#         return reverse_lazy('customers')
-#
-#     def form_invalid(self, form):
-#         messages.error(self.request, 'Invalid email or password')
-#         return self.render_to_response(self.get_context_data(form=form))
+#             )
+#             login(request, user)
+#             return redirect('customers')
+#     else:
+#         form = RegisterForm()
+#     context = {'form': form}
+#     return render(request, 'auth/register.html', context)
 
 
-def register_page(request):
-    if request.method == 'POST':
+class RegisterView(View):
+    def get(self, request, *args, **kwargs):
+        form = RegisterForm()
+        return render(request, 'auth/register.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
             send_mail(
-                'User Succesfully Registered',
+                'User Successfully Registered',
                 'Test body',
                 EMAIL_DEFAULT_SENDER,
                 [user.email],
                 fail_silently=False
-
             )
-            login(request, user)
-            return redirect('customers')
-    else:
-        form = RegisterForm()
-    context = {'form': form}
-    return render(request, 'auth/register.html', context)
+
+            # Authenticate the user and set the backend
+            user = authenticate(request, email=user.email, password=request.POST['password'])
+            if user:
+                user.backend = 'django.contrib.auth.backends.ModelBackend'  # or your specific backend
+                login(request, user)
+                return redirect('customers')
+            else:
+                messages.error(request, 'Authentication failed')
+
+        return render(request, 'auth/register.html', {'form': form})
 
 
-# class RegisterPage(FormView):
-#     template_name = 'auth/register.html'
-#     form_class = RegisterForm
-#     success_url = reverse_lazy('customers')
-#
-#     def form_valid(self, form):
-#         user = form.save(commit=False)
-#         user.save()
-#         send_mail(
-#             'User Succesfully Registered',
-#             'Test body',
-#             EMAIL_DEFAULT_SENDER,
-#             [user.email],
-#             fail_silently=False
-#
-#         )
-#         login(self.request, user)
-#         return super().form_valid(form)
-
-
-def logout_page(request):
-    if request.method == 'POST':
+class LogoutView(View):
+    def post(self, request, *args, **kwargs):
         logout(request)
         return redirect('customers')
 

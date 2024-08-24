@@ -416,15 +416,17 @@
                                     {% else %}
                                         ${{ product.price }}
                                     {% endif %}</h4>
-                                     <div class="d-flex justify-content-center small text-warning mb-2">
-                                           {% for i in "12345" %}
-                                              {% if forloop.counter <= product.rating %}
-                                                  <i class="bi bi-star-fill"></i>
-                                              {% else %}
-                                                  <i class="bi bi-star"></i>
-                                              {% endif %}
-                                           {% endfor %}
-                                     </div>
+                                    <div class="ratings-container">
+    {% with ''|center:product.rating as ratings %}
+        <div class="ratings">
+            {% for rating in ratings %}
+                <span class="fa fa-star text-warning"></span>
+            {% endfor %}
+        </div>
+        <span class="ms-1">{{ comment }}</span>
+    {% endwith %}
+</div>
+
                                                 <div class="d-none d-lg-block">
                                                     <p class="fs--1 mb-1">Shipping Cost: <strong>$50</strong></p>
                                                     <p class="fs--1 mb-1">Stock: <strong
