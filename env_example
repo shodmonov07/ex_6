@@ -1,0 +1,6 @@
+dbdb_User = XXXX
+db_port = XXXX
+db_host = XXXX
+db_password = XXXX
+db_name = XXXX
+SECRET_KEY = XXXX

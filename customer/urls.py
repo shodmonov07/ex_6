@@ -20,7 +20,7 @@ from customer.views import customers, add_customer, edit_customer, delete_custom
      customer_detail, SendingEmailView, RegisterView, LoginPageView, LogoutView
 
 urlpatterns = [
-    path('', customers, name='customers'),
+    path('customers/', customers, name='customers'),
     path('customers/<int:customer_id>/', customer_detail, name='customer_detail'),
     path('add-customer/', add_customer, name='add_customer'),
     path('customer/<int:pk>/delete', delete_customer, name='delete'),

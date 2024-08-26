@@ -32,7 +32,6 @@ def customer_detail(request, customer_id):
     return render(request, 'customer/customer-detail.html', {'customer': customer})
 
 
-@login_required
 @permission_required('customer.view_customer', raise_exception=True)
 def add_customer(request):
     customer = Customer.objects.all()

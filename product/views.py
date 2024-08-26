@@ -51,7 +51,7 @@ class ProductListView(ListView):
     model = Product
     template_name = 'product/product-list.html'
     context_object_name = 'products'
-    paginate_by = 10  # Har bir sahifada 10 ta mahsulot
+    paginate_by = 3  # Har bir sahifada 10 ta mahsulot
 
 
 class ProductDetailView(DetailView):

@@ -453,23 +453,25 @@
             </div>
 
 
-            <div class="pagination">
-                <span class="step-links">
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    </span>
-
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>
+            <div class="card-footer d-flex align-items-center justify-content-center">
+    <button class="btn btn-sm btn-falcon-default me-1" type="button" title="Previous"
+            data-list-pagination="prev" {% if not page_obj.has_previous %}disabled{% endif %}>
+        <span class="fas fa-chevron-left"></span>
+    </button>
+  <ul class="pagination mb-0">
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+    <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Next"
+            data-list-pagination="next" {% if not page_obj.has_next %}disabled{% endif %}>
+        <span class="fas fa-chevron-right"></span>
+    </button>
+</div>
         </div>
         <footer class="footer">
             <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
