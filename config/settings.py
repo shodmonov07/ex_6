@@ -180,11 +180,9 @@ AUTHENTICATION_BACKENDS = [
     'social_core.backends.twitter.TwitterOAuth',
 ]
 
-client_id = '923798874874-8vicopmvh5317ddnkdo4arprf8qcab2i.apps.googleusercontent.com'
-client_secret = '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'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '923798874874-8vicopmvh5317ddnkdo4arprf8qcab2i.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 LOGIN_REDIRECT_URL = 'customers'
 # SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
