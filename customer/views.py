@@ -3,8 +3,10 @@ from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
+from openpyxl.workbook import Workbook
 
 from config.settings import EMAIL_DEFAULT_SENDER
 from customer.forms import CustomerModelForm, RegisterForm, LoginForm, SendingEmailForm
@@ -199,3 +201,27 @@ class SendingEmailView(View):
             )
             self.sent = True
         return render(request, 'send-email.html', {'form': form, 'sent': self.sent})
+
+
+class ExcelExportView(View):
+    def get(self, request, *args, **kwargs):
+        # Excel faylini yaratish
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = 'Customers'
+
+        # Sarlavhalarni yozish
+        sheet.append(['ID', 'Name', 'Email', 'Phone'])
+
+        # Ma'lumotlarni qo'shish
+        customers = Customer.objects.all()
+        for customer in customers:
+            sheet.append([customer.id, customer.name, customer.email, customer.phone])
+
+        # Javobni yaratish
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=customers.xlsx'
+
+        # Excel faylini javobga yozish
+        workbook.save(response)
+        return response
