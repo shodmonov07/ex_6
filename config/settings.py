@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'product.apps.ProductConfig',
     'django.contrib.postgres',
     'social_django',
+    'import_export'
 ]
 
 JAZZMIN_SETTINGS = {
