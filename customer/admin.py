@@ -9,7 +9,7 @@ class CustomerAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     search_fields = ('full_name', 'email', 'phone_number', 'address')
     list_filter = ('is_active', 'address')
     list_per_page = 10
-    prepopulated_fields = {'slug': ('full_name',)}
+    # prepopulated_fields = {'slug': ('full_name',)}
 
 
 @admin.register(User)

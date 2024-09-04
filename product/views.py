@@ -1,10 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DeleteView, UpdateView, DetailView, CreateView, ListView
+from openpyxl.workbook import Workbook
 
 from product.forms import ProductModelForm
 from product.models import Product
@@ -91,3 +93,28 @@ class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'product/product-delete.html'
     success_url = reverse_lazy('ProductListView')
+
+
+class ProductExcelExportView(View):
+    def get(self, request, *args, **kwargs):
+        # Excel faylini yaratish
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = 'Products'
+
+        # Sarlavhalarni yozish
+        sheet.append(['ID', 'Name', 'Price', 'Quantity', 'Discount', 'Rating'])
+
+        # Ma'lumotlarni qo'shish
+        products = Product.objects.all()
+        for product in products:
+            sheet.append([product.id, product.name, product.price, product.quantity, product.discount, product.rating])
+
+        # Javobni yaratish
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=products.xlsx'
+
+        # Excel faylini javobga yozish
+        workbook.save(response)
+        return response
+

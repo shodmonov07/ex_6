@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
-from django.contrib.auth.views import LoginView
+# from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
@@ -9,7 +9,7 @@ from django.views.generic import View
 from config.settings import EMAIL_DEFAULT_SENDER
 from customer.forms import CustomerModelForm, RegisterForm, LoginForm, SendingEmailForm
 from customer.models import Customer
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 
 
 # Create your views here.
@@ -18,7 +18,8 @@ def customers(request):
     search_query = request.GET.get('search')
     if search_query:
         customer_list = Customer.objects.filter(
-            Q(full_name__icontains=search_query) | Q(address__icontains=search_query) | Q(email__icontains=search_query))
+            Q(full_name__icontains=search_query) | Q(address__icontains=search_query) |
+            Q(email__icontains=search_query))
     else:
         customer_list = Customer.objects.all()
     context = {
@@ -199,3 +200,6 @@ class SendingEmailView(View):
             )
             self.sent = True
         return render(request, 'send-email.html', {'form': form, 'sent': self.sent})
+
+
+
