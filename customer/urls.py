@@ -16,8 +16,9 @@ Including another URLconf
 """
 from django.urls import path
 
+from customer import views
 from customer.views import customers, add_customer, edit_customer, delete_customer, \
-    customer_detail, SendingEmailView, RegisterView, LoginPageView, LogoutView, ExcelExportView
+    customer_detail, SendingEmailView, LoginPageView, LogoutView, ExcelExportView, register_page, ActivateAccountView
 
 urlpatterns = [
     path('customers/', customers, name='customers'),
@@ -27,7 +28,8 @@ urlpatterns = [
     path('customer/<int:pk>/update', edit_customer, name='edit'),
     path('login_page/', LoginPageView.as_view(), name='login_page'),
     path('logout_page/', LogoutView.as_view(), name='logout_page'),
-    path('register_page/', RegisterView.as_view(), name='register_page'),
+    path('register_page/', register_page, name='register_page'),
     path('send-email/', SendingEmailView.as_view(), name='sending_email'),
     path('export/customers/', ExcelExportView.as_view(), name='export_customers'),
+    path('activate/<uidb64>/<token>/', ActivateAccountView.as_view(), name='activate'),
 ]

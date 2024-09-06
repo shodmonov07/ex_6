@@ -1,17 +1,23 @@
 from django.contrib import messages
-from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth import logout, login, authenticate, get_user_model
+from django.contrib.sites.shortcuts import get_current_site
 # from django.contrib.auth.views import LoginView
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import View
 from openpyxl.workbook import Workbook
 
 from config.settings import EMAIL_DEFAULT_SENDER
 from customer.forms import CustomerModelForm, RegisterForm, LoginForm, SendingEmailForm
-from customer.models import Customer
+from customer.models import Customer, User
 from django.contrib.auth.decorators import permission_required
+
+from customer.tokens import account_activation_token
 
 
 # Create your views here.
@@ -120,56 +126,66 @@ class LoginPageView(View):
         return render(request, 'auth/login.html', {'form': form})
 
 
-# def register_page(request):
-#     if request.method == 'POST':
+def register_page(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            current_site = get_current_site(request)
+            message = render_to_string('auth/account_activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            email = EmailMessage(
+                'Activate your account',
+                message,
+                EMAIL_DEFAULT_SENDER,
+                [user.email],
+
+            )
+            email.content_subtype = 'html'
+            email.send()
+
+            return HttpResponse('<h1>Please confirm your email address to complete the registration</h1>')
+            # login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            # return redirect('customers')
+    else:
+        form = RegisterForm()
+    context = {'form': form}
+    return render(request, 'auth/register.html', context)
+
+
+# class RegisterView(View):
+#     def get(self, request, *args, **kwargs):
+#         form = RegisterForm()
+#         return render(request, 'auth/register.html', {'form': form})
+#
+#     def post(self, request, *args, **kwargs):
 #         form = RegisterForm(request.POST)
 #         if form.is_valid():
 #             user = form.save(commit=False)
 #             user.save()
 #             send_mail(
-#                 'User Succesfully Registered',
+#                 'User Successfully Registered',
 #                 'Test body',
 #                 EMAIL_DEFAULT_SENDER,
 #                 [user.email],
 #                 fail_silently=False
-#
 #             )
-#             login(request, user)
-#             return redirect('customers')
-#     else:
-#         form = RegisterForm()
-#     context = {'form': form}
-#     return render(request, 'auth/register.html', context)
-
-
-class RegisterView(View):
-    def get(self, request, *args, **kwargs):
-        form = RegisterForm()
-        return render(request, 'auth/register.html', {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
-            send_mail(
-                'User Successfully Registered',
-                'Test body',
-                EMAIL_DEFAULT_SENDER,
-                [user.email],
-                fail_silently=False
-            )
-
-            # Authenticate the user and set the backend
-            user = authenticate(request, email=user.email, password=request.POST['password'])
-            if user:
-                user.backend = 'django.contrib.auth.backends.ModelBackend'  # or your specific backend
-                login(request, user)
-                return redirect('customers')
-            else:
-                messages.error(request, 'Authentication failed')
-
-        return render(request, 'auth/register.html', {'form': form})
+#
+#             # Authenticate the user and set the backend
+#             user = authenticate(request, email=user.email, password=request.POST['password'])
+#             if user:
+#                 user.backend = 'django.contrib.auth.backends.ModelBackend'  # or your specific backend
+#                 login(request, user)
+#                 return redirect('customers')
+#             else:
+#                 messages.error(request, 'Authentication failed')
+#
+#         return render(request, 'auth/register.html', {'form': form})
 
 
 class LogoutView(View):
@@ -204,29 +220,57 @@ class SendingEmailView(View):
         return render(request, 'send-email.html', {'form': form, 'sent': self.sent})
 
 
-<<<<<<< HEAD
-
-=======
 class ExcelExportView(View):
     def get(self, request, *args, **kwargs):
-        # Excel faylini yaratish
         workbook = Workbook()
         sheet = workbook.active
         sheet.title = 'Customers'
 
-        # Sarlavhalarni yozish
         sheet.append(['ID', 'Name', 'Email', 'Phone'])
 
-        # Ma'lumotlarni qo'shish
         customers = Customer.objects.all()
         for customer in customers:
             sheet.append([customer.id, customer.name, customer.email, customer.phone])
 
-        # Javobni yaratish
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename=customers.xlsx'
 
-        # Excel faylini javobga yozish
         workbook.save(response)
         return response
->>>>>>> cc01d829b88a0334025a42eed5ac6e1f0b2c0bc4
+
+
+def active(request, uidb64, token):
+    try:
+        uid = force_bytes(urlsafe_base64_decode(uidb64))
+        user = Users.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, Users.DoesNotExist):
+        user = None
+    if user and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        # return redirect('home')
+        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
+
+
+Users = get_user_model()
+
+
+class ActivateAccountView(View):
+    def get(self, request, uidb64, token, *args, **kwargs):
+        try:
+            uid = force_bytes(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            # Email tasdiqlangandan keyin 'customers' sahifasiga yo'naltirish
+            return redirect('customers')
+        else:
+            return HttpResponse('Activation link is invalid!')

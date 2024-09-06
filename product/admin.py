@@ -32,10 +32,7 @@ class AttributeValueAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 @admin.register(ProductAttribute)
 class ProductAttributeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('product', 'attribute', 'attribute_value')
-<<<<<<< HEAD
     search_fields = ('product', 'attribute', 'attribute_value')
-=======
     search_fields = ('product',)
->>>>>>> cc01d829b88a0334025a42eed5ac6e1f0b2c0bc4
     list_filter = ('product', 'attribute', 'attribute_value')
     list_per_page = 10

@@ -14,7 +14,4 @@ class CustomerAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('email', 'date_of_birth')
-    search_fields = ('email',)
-    list_filter = ('date_of_birth',)
-    list_per_page = 10
+    list_display = ('id', 'email', 'is_staff', 'is_active')
