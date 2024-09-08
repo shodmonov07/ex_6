@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author's Max Price Book</title>
+</head>
+<body>
+    <h2>Authors and their Max Price Book</h2>
+    <ul>
+        {% for author in authors %}
+            <li>{{ author.name }}: Max Price Book - ${{ author.max_price }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

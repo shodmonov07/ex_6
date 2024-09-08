@@ -14,4 +14,4 @@ class CustomerAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id', 'email', 'is_staff', 'is_active')
+    list_display = ('id', 'username', 'email', 'is_staff', 'is_active')
