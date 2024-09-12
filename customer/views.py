@@ -270,7 +270,6 @@ class ActivateAccountView(View):
             user.is_active = True
             user.save()
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            # Email tasdiqlangandan keyin 'customers' sahifasiga yo'naltirish
             return redirect('customers')
         else:
             return HttpResponse('Activation link is invalid!')
