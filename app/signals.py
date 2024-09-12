@@ -32,7 +32,7 @@ def post_save_book(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=Book)
 def pre_delete_book(sender, instance, **kwargs):
-    filename = os.path.join(settings.BASE_DIR, 'books_data', f'{instance.slug}.json')
+    filename = os.path.join(settings.BASE_DIR, 'books_data', f'{instance.name}.json')
     book_data = {
         'id': instance.id,
         'title': instance.title,

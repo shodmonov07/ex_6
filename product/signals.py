@@ -32,7 +32,7 @@ def post_save_product(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=Product)
 def pre_delete_product(sender, instance, **kwargs):
-    filename = os.path.join(settings.BASE_DIR, 'products_data', f'{instance.slug}.json')
+    filename = os.path.join(settings.BASE_DIR, 'products_data', f'{instance.name}.json')
     product_data = {
         'id': instance.id,
         'name': instance.name,
